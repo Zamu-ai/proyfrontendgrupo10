@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid nav-bar container ">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
+            <ul class="navbar-nav" mx-auto fw-medium>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/" routerLinkActive="active">
+                        <img src="/grupo10.jpg" alt="Logo G10" class="logo-nav">
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" routerLink="JuegoDetalle" routerLinkActive="active">Detail Juegos</a>     
+                </li>
+                <button type="button" routerLink="Login">INICIAR SESION</button>
+                <button type="button" (click)="ModoOscuro()"> 
+                    <i class="bi" [ngClass]="esModoOscuro ? 'bi-moon-fill':'bi-moon'"></i>
+                </button>
+            </ul>
+        </div>
+    </div>
+</nav>
