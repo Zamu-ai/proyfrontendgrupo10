@@ -1,20 +1,40 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid nav-bar container ">
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
-            <ul class="navbar-nav" mx-auto fw-medium>
-                <li class="nav-item">
-                    <a class="nav-link" routerLink="/" routerLinkActive="active">
-                        <img src="/grupo10.jpg" alt="Logo G10" class="logo-nav">
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link" routerLink="JuegoDetalle" routerLinkActive="active">Detail Juegos</a>     
-                </li>
-                <button type="button" routerLink="Login">INICIAR SESION</button>
-                <button type="button" (click)="ModoOscuro()"> 
-                    <i class="bi" [ngClass]="esModoOscuro ? 'bi-moon-fill':'bi-moon'"></i>
-                </button>
-            </ul>
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar py-2">
+  <div class="container-fluid container">
+    
+    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <span class="border border-2 rounded px-2 py-1 fw-bold fs-5">G10</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-medium">
+        <li class="nav-item">
+          <a class="nav-link text-uppercase" routerLink="JuegoDetalle" routerLinkActive="active">Catalogo</a>     
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+        
+        <div class="input-group input-group-sm custom-search-group" *ngIf="router.url !== '/'">
+          <span class="input-group-text bg-transparent text-light border-secondary">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control bg-transparent text-light border-secondary custom-search" placeholder="Search...">
         </div>
+
+        <button type="button" class="btn btn-link text-light fs-5 p-0 text-decoration-none" (click)="ModoOscuro()"> 
+          <i class="bi" [ngClass]="esModoOscuro ? 'bi-moon-fill' : 'bi-sun-fill'"></i>
+        </button>
+
+        <button type="button" class="btn custom-btn-login fw-bold px-4" routerLink="Login">
+          <i class="bi bi-chat-square-text-fill me-1"></i> INICIAR SESIÓN
+        </button>
+
+      </div>
     </div>
+  </div>
 </nav>
