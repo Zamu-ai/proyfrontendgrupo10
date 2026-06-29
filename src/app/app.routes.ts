@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home'; // Pag principal home
+import { HomeComponent } from './pages/home/home';
+import { Login } from './pages/login/login';
+import { JuegoDetalle } from './pages/juego-detalle/juego-detalle';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent }, // La ruta vacía (el inicio) carga el Home
-  { path: '**', redirectTo: '' } // Si alguien escribe una URL que no existe, lo manda al Home
+  { path: '', component: HomeComponent }, // Mi home
+  { path: 'Login', component: Login }, 
+  { path: 'JuegoDetalle', component: JuegoDetalle }, 
+  { path: '**', redirectTo: '' } 
 ];

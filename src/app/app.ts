@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+// importamos componente de uriel
+import { Navbar } from './pages/layout/navbar/navbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  // Le avisamos a Angular que acá vamos a usar el router y el navbar
+  imports: [RouterOutlet, Navbar], 
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
-  protected readonly title = signal('TPFinalFront');
+  title = 'proyfrontendgrupo10';
 }
