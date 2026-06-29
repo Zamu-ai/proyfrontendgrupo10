@@ -1,0 +1,31 @@
+/* CSS exclusivo para los bordes, colores y sombras personalizadas */
+
+/* El brillo exterior y el degradado del borde */
+.custom-neon-border {
+  background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-neon-border:focus-within {
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.8);
+  transform: scale(1.02);
+}
+
+/* Sombra del título */
+.custom-text-shadow {
+  text-shadow: 0 0 15px rgba(0, 210, 255, 0.6);
+  letter-spacing: 1px;
+}
+
+/* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
+.custom-input:focus {
+  box-shadow: none !important;
+  background-color: #212529; /* bg-dark de Bootstrap */
+}
+
+/* Color personalizado al pasar el mouse por el botón */
+.custom-btn:hover {
+  background-color: #3a7bd5 !important;
+  color: #ffffff !important;
+}
