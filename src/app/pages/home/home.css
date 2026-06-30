@@ -19,9 +19,9 @@
 }
 
 /* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
+/* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
 .custom-input:focus {
   box-shadow: none !important;
-  background-color: #212529; /* bg-dark de Bootstrap */
 }
 
 /* Color personalizado al pasar el mouse por el botón */
