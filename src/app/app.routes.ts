@@ -4,7 +4,7 @@ import { Login } from './pages/login/login';
 import { JuegoDetalle } from './pages/juego-detalle/juego-detalle';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent }, // Mi home
+  { path: '', component: HomeComponent }, // Home page route LUCAS
   { path: 'Login', component: Login }, 
   { path: 'JuegoDetalle', component: JuegoDetalle }, 
   { path: '**', redirectTo: '' } 
