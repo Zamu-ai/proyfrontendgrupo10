@@ -1,4 +1,4 @@
-/* CSS exclusivo para los bordes, colores y sombras personalizadas */
+/* CSS exclusivo para los bordes, colores, tamaños y sombras personalizadas */
 
 /* El brillo exterior y el degradado del borde */
 .custom-neon-border {
@@ -18,7 +18,6 @@
   letter-spacing: 1px;
 }
 
-/* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
 /* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
 .custom-input:focus {
   box-shadow: none !important;

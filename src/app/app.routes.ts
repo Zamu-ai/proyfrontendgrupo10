@@ -7,6 +7,7 @@ import { JuegoDetalleComponent } from './pages/juego-detalle/juego-detalle';
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Mi home
   { path: 'Login', component: LoginComponent },
+  {path:'oauth-callback',component: OuathCallback},
   {path: 'Registro', component: RegistroComponent},
   { path: 'juego/detalle/:id', component: JuegoDetalleComponent },
   { path: '**', redirectTo: '' } 
