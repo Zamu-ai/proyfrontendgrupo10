@@ -18,7 +18,7 @@ export class JuegosService {
     return this.http.get(`${this.baseUrl}/mas-jugados`);
   }
 
-  // --- NUEVAS RUTAS PREPARADAS PARA EL BACKEND DE VALENTÍN ---
+  // --- NUEVAS RUTAS  ---
 
   // 1. Para el buscador gigante del Home
   obtenerSugerencias(nombre: string): Observable<any> {
