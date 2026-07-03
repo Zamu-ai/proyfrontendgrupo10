@@ -26,6 +26,10 @@ export class LoginComponent implements OnInit {
     this.initForm();
   }
 
+  loguearConGoogle():void{
+    window.location.href ='http://localhost:3000/api/auth/google'
+  }
+
   initForm(): void {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
