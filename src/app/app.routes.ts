@@ -11,5 +11,6 @@ export const routes: Routes = [
   {path:'oauth-callback',component: OuathCallback},
   {path: 'Registro', component: RegistroComponent},
   { path: 'JuegoDetalle', component: JuegoDetalle }, 
+  { path: 'Registro', component: RegistroComponent },
   { path: '**', redirectTo: '' } 
 ];

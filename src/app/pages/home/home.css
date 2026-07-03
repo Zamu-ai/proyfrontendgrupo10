@@ -1,4 +1,4 @@
-/* CSS exclusivo para los bordes, colores y sombras personalizadas */
+/* CSS exclusivo para los bordes, colores, tamaños y sombras personalizadas */
 
 /* El brillo exterior y el degradado del borde */
 .custom-neon-border {
@@ -19,7 +19,6 @@
 }
 
 /* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
-/* Quitar el borde azul por defecto que le pone Bootstrap al hacer clic */
 .custom-input:focus {
   box-shadow: none !important;
 }
@@ -28,4 +27,18 @@
 .custom-btn:hover {
   background-color: #3a7bd5 !important;
   color: #ffffff !important;
+}
+
+/* Altura controlada para las imágenes del carrusel */
+.custom-carousel-img {
+  height: 500px;
+  object-fit: contain; /* Esto hace que la imagen entre completa sin recortarse */
+  background-color: #121212; /* Fondo oscuro para rellenar los huecos laterales */
+}
+
+/* --- ESTILOS PARA LAS TARJETAS DEL CATÁLOGO --- */
+.custom-card-img {
+  height: 250px; /* Altura fija para que todas queden parejas */
+  object-fit: cover; /* Recorta los bordes sin deformar la imagen */
+  object-position: top; /* Prioriza mostrar la parte de arriba  */
 }

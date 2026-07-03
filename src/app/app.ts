@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 // importamos componente de uriel
-import { Navbar } from './pages/layout/navbar/navbar';
+import { Navbar } from './layout/navbar/navbar';
 
 @Component({
   selector: 'app-root',
