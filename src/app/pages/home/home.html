@@ -30,13 +30,15 @@
           <!-- NgFor para iterar sobre los juegos destacados -->
           <!-- La condición [class.active]="i === 0" es clave para que el carrusel funcione -->
           <div *ngFor="let destacado of juegosDestacados; let i = index" 
-            class="carousel-item" 
-            [class.active]="i === 0">
-            <img [src]="destacado.imagen" class="d-block w-100" [alt]="destacado.titulo">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-2">
-              <h5>{{ destacado.titulo }}</h5>
-              <p class="mb-0 text-success fw-bold">{{ destacado.descuento }} | {{ destacado.precio }}</p>
-            </div>
+          class="carousel-item" 
+          [class.active]="i === 0">
+            <a [routerLink]="['/juego/detalle', destacado.id]">
+              <img [src]="destacado.imagen" class="d-block w-100" [alt]="destacado.titulo">
+              <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-2">
+                <h5>{{ destacado.titulo }}</h5>
+                <p class="mb-0 text-success fw-bold">{{ destacado.descuento }} | {{ destacado.precio }}</p>
+              </div>
+            </a>
           </div>
 
         </div>
@@ -64,17 +66,19 @@
     
     <!-- NgFor para dibujar una tarjeta por cada juego en el catálogo -->
     <div class="col" *ngFor="let juego of catalogoGeneral">
-      <div class="card h-100 bg-body-tertiary border-secondary shadow-sm">
-        <img [src]="juego.imagen" class="card-img-top" [alt]="juego.titulo">
-        <div class="card-body">
-          <h5 class="card-title">{{ juego.titulo }}</h5>
-          <p class="card-text text-muted small">{{ juego.categoria }}</p>
+      <a [routerLink]="['/juego/detalle', juego.id]" class="card-link">
+        <div class="card h-100 bg-body-tertiary border-secondary shadow-sm">
+          <img [src]="juego.imagen" class="card-img-top" [alt]="juego.titulo">
+          <div class="card-body">
+            <h5 class="card-title">{{ juego.titulo }}</h5>
+            <p class="card-text text-muted small">{{ juego.categoria }}</p>
+          </div>
+          <div class="card-footer border-secondary d-flex justify-content-between align-items-center">
+            <span class="badge" [ngClass]="juego.descuento === 'Free' ? 'bg-primary' : 'bg-success'">{{ juego.descuento }}</span>
+            <span class="fw-bold">{{ juego.precio }}</span>
+          </div>
         </div>
-        <div class="card-footer border-secondary d-flex justify-content-between align-items-center">
-          <span class="badge" [ngClass]="juego.descuento === 'Free' ? 'bg-primary' : 'bg-success'">{{ juego.descuento }}</span>
-          <span class="fw-bold">{{ juego.precio }}</span>
-        </div>
-      </div>
+      </a>
     </div>
     
   </div>

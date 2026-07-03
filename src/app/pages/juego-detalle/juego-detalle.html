@@ -1,1 +1,84 @@
-<p>juego-detalle works!</p>
+<div class="container my-5" *ngIf="juego">
+  <div class="row">
+    <div class="col-lg-4">
+      <img [src]="juego.imagenPortada" class="img-fluid rounded shadow mb-4" [alt]="juego.titulo">
+      <div class="card bg-body-tertiary border-secondary">
+        <div class="card-body">
+          <h5 class="card-title">Detalles Rápidos</h5>
+          <ul class="list-unstyled">
+            <li><strong>Lanzamiento:</strong> {{ juego.fechaLanzamiento | date:'dd/MM/yyyy' }}</li>
+            <li><strong>Desarrolladora:</strong> {{ juego.desarrolladora }}</li>
+            <li><strong>Calificación IGDB:</strong> 
+              <span class="badge rounded-pill" [ngClass]="getRatingClass(juego.calificacion)">
+                {{ juego.calificacion.toFixed(0) }}
+              </span>
+            </li>
+          </ul>
+          <h6 class="mt-3">Plataformas:</h6>
+          <div class="d-flex flex-wrap">
+            <span *ngFor="let plataforma of juego.plataformas" class="badge bg-info text-dark me-2 mb-2">{{ plataforma }}</span>
+          </div>
+          <h6 class="mt-3">Géneros:</h6>
+          <div class="d-flex flex-wrap">
+            <span *ngFor="let genero of juego.generos" class="badge bg-secondary me-2 mb-2">{{ genero }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <h1 class="display-4 fw-bold custom-text-shadow">{{ juego.titulo }}</h1>
+      <hr>
+      <p class="lead">{{ juego.descripcion }}</p>
+
+      <div class="mt-4" *ngIf="trailerUrl">
+        <h3 class="mb-3">Trailer</h3>
+        <div class="ratio ratio-16x9">
+          <iframe [src]="trailerUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="mt-5" *ngIf="juego.capturas && juego.capturas.length > 0">
+        <h3 class="mb-3">Galería de Capturas</h3>
+        <div id="carouselCapturas" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner rounded shadow-sm">
+            <div *ngFor="let captura of juego.capturas; let i = index" class="carousel-item" [class.active]="i === 0">
+              <img [src]="captura" class="d-block w-100" alt="Captura de {{juego.titulo}}">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselCapturas" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselCapturas" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-5" *ngIf="juego.juegosSimilares && juego.juegosSimilares.length > 0">
+        <h3 class="mb-3">Quizá te guste...</h3>
+        <div class="row row-cols-2 row-cols-md-3 g-3">
+          <div class="col" *ngFor="let similar of juego.juegosSimilares">
+            <div class="card h-100 bg-body-tertiary border-secondary text-center">
+              <a [routerLink]="['/juego/detalle', similar.id]">
+                <img [src]="similar.imagenPortada" class="card-img-top" [alt]="similar.titulo">
+              </a>
+              <div class="card-body p-2">
+                <h6 class="card-title small mb-0">{{ similar.titulo }}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!juego" class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+  <div class="spinner-border text-info" style="width: 3rem; height: 3rem;" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+</div>

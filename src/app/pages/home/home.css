@@ -29,3 +29,20 @@
   background-color: #3a7bd5 !important;
   color: #ffffff !important;
 }
+
+/* Estilos para que las tarjetas sean clickeables y tengan efecto hover */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.card-link .card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card-link:hover .card {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 210, 255, 0.25) !important;
+}
