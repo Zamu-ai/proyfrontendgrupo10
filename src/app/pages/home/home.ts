@@ -1,5 +1,6 @@
+import { CommonModule } from '@angular/common'; // Necesario para usar *ngFor y *ngIf en el HTML
+import { RouterModule } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { JuegosService } from '../../services/juegos.service'; // Ajustado al nombre correcto del servicio
 import { Subject } from 'rxjs'; // Importamos Subject para el buscador
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -7,9 +8,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './home.html',
-  styleUrls: ['./home.css']
+  imports: [CommonModule, RouterModule],
+  templateUrl: './home.html', // Apuntamos al html
+  styleUrls: ['./home.css']   // Apuntamos al css
 })
 export class HomeComponent implements OnInit {
 

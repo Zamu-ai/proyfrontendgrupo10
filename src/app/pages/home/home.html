@@ -40,20 +40,21 @@
     <div class="col-lg-10">
       <h3 class="mb-3" style="text-align: center;">Ultimos juegos buscados</h3>
       
-      <!--- Carrusel de juegos destacados --->
-      <!--- *ngIf frena la carga del componente de Bootstrap hasta que la respuesta del backend llega --->
-      <!--- En la linea 50, esto es un requisito estricto de Bootstrap. Sino se le asigna la clase active al primer juego, el carrusel no arranca. --->
-      <div *ngIf="juegosDestacados.length > 0" id="carruselJuegos" class="carousel slide shadow" data-bs-ride="carousel">
-        <div class="carousel-inner rounded">
-          <div *ngFor="let destacado of juegosDestacados; let i = index"
-            class="carousel-item"
-            [class.active]="i === 0">
-            <img [src]="destacado.imagen_portada" class="d-block w-100 custom-carousel-img" [alt]="destacado.titulo">
-            
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-2">
-              <h5 class="text-light">{{ destacado.titulo }}</h5>
-              <p class="mb-0 text-success fw-bold">{{ destacado.descuento }} | {{ destacado.precio }}</p>
-            </div>
+      <div id="carruselJuegos" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner rounded shadow-sm">
+          
+          <!-- NgFor para iterar sobre los juegos destacados -->
+          <!-- La condición [class.active]="i === 0" es clave para que el carrusel funcione -->
+          <div *ngFor="let destacado of juegosDestacados; let i = index" 
+          class="carousel-item" 
+          [class.active]="i === 0">
+            <a [routerLink]="['/juego/detalle', destacado.id]">
+              <img [src]="destacado.imagen" class="d-block w-100" [alt]="destacado.titulo">
+              <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-2">
+                <h5>{{ destacado.titulo }}</h5>
+                <p class="mb-0 text-success fw-bold">{{ destacado.descuento }} | {{ destacado.precio }}</p>
+              </div>
+            </a>
           </div>
           
         </div>
@@ -82,17 +83,19 @@
   <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
     
     <div class="col" *ngFor="let juego of catalogoGeneral">
-      <div class="card h-100 bg-body-tertiary border-secondary shadow-sm">
-        <img [src]="juego.imagen_portada || juego.imagen" class="card-img-top custom-card-img" [alt]="juego.titulo">
-        <div class="card-body">
-          <h5 class="card-title">{{ juego.titulo }}</h5>
-          <p class="card-text text-muted small">{{ juego.categoria }}</p>
+      <a [routerLink]="['/juego/detalle', juego.id]" class="card-link">
+        <div class="card h-100 bg-body-tertiary border-secondary shadow-sm">
+          <img [src]="juego.imagen" class="card-img-top" [alt]="juego.titulo">
+          <div class="card-body">
+            <h5 class="card-title">{{ juego.titulo }}</h5>
+            <p class="card-text text-muted small">{{ juego.categoria }}</p>
+          </div>
+          <div class="card-footer border-secondary d-flex justify-content-between align-items-center">
+            <span class="badge" [ngClass]="juego.descuento === 'Free' ? 'bg-primary' : 'bg-success'">{{ juego.descuento }}</span>
+            <span class="fw-bold">{{ juego.precio }}</span>
+          </div>
         </div>
-        <div class="card-footer border-secondary d-flex justify-content-between align-items-center">
-          <span class="badge" [ngClass]="juego.descuento === 'Free' ? 'bg-primary' : 'bg-success'">{{ juego.descuento }}</span>
-          <span class="fw-bold">{{ juego.precio }}</span>
-        </div>
-      </div>
+      </a>
     </div>
     
   </div>
