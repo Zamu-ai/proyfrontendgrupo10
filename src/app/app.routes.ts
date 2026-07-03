@@ -6,8 +6,8 @@ import { RegistroComponent } from './pages/registro/registro';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Mi home
-  { path: 'Login', component: LoginComponent },
-  {path: 'Registro', component: RegistroComponent},
+  { path: 'Login', component: LoginComponent }, 
   { path: 'JuegoDetalle', component: JuegoDetalle }, 
+  { path: 'Registro', component: RegistroComponent },
   { path: '**', redirectTo: '' } 
 ];

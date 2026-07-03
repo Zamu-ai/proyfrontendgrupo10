@@ -1,87 +1,131 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necesario para usar *ngFor y *ngIf en el HTML
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { JuegosService } from '../../services/juegos.service'; // Ajustado al nombre correcto del servicio
+import { Subject } from 'rxjs'; // Importamos Subject para el buscador
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './home.html', // Apuntamos al html
-  styleUrls: ['./home.css']   // Apuntamos al css
+  templateUrl: './home.html',
+  styleUrls: ['./home.css']
 })
 export class HomeComponent implements OnInit {
 
-  // Declaramos dos arrays para almacenar los juegos destacados y el catálogo general
   juegosDestacados: any[] = [];
   catalogoGeneral: any[] = [];
 
-  constructor() { }
+  // --- VARIABLES PARA EL BUSCADOR DESPLEGABLE ---
+  // Guardamos las sugerencias acá para no sobreescribir el catálogo general
+  sugerenciasBusqueda: any[] = [];
+  // Controla si se muestra o se oculta el menú flotante
+  mostrarSugerencias: boolean = false;
+
+  // NUEVO: Creamos un "Subject" (un canal de comunicación) para el buscador
+  private buscadorSubject = new Subject<string>();
+
+  constructor(private juegosService: JuegosService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.cargarJuegosMock();
+    this.cargarCatalogoGeneral();
+    this.cargarJuegosDestacados();
+
+    // NUEVO: Configuramos el "Debounce" (freno) apenas arranca la página
+    this.buscadorSubject.pipe(
+      // Espera 200 milisegundos después de que el usuario deja de tipear
+      debounceTime(200), 
+      // Solo manda la petición si el texto realmente cambió (ej: si escribe y borra rápido, no busca)
+      distinctUntilChanged() 
+    ).subscribe(termino => {
+      // Cuando pasen los 200ms, recién ahí ejecutamos la búsqueda real
+      this.ejecutarBusquedaReal(termino);
+    });
   }
 
-  // Método temporal para cargar datos de ejemplo (mock) en los arrays - CAMBIAR CUANDO ESTÉ DISPONIBLE LA BD PROPIA
-  cargarJuegosMock() {
-    // 1. CARRUSEL: Ponemos juegos con portadas anchas
-    this.juegosDestacados = [
-      {
-        titulo: 'Counter-Strike 2',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/730/capsule_616x353.jpg',
-        descuento: 'Free',
-        precio: 'Gratis'
+  cargarCatalogoGeneral() {
+    // Pegamos el endpoint de "más jugados" para mostrarlo en el Home
+    this.juegosService.obtenerMasJugados().subscribe({
+      // sino ponemos any no funciona
+      next: (datosQueLlegan: any) => {
+        // Nos aseguramos de agarrar .data si viene empaquetado, o el arreglo directo
+        this.catalogoGeneral = datosQueLlegan.data || datosQueLlegan || [];
+        
+        // Mostramos al instante
+        this.cdr.detectChanges();
       },
-      {
-        titulo: 'PUBG: BATTLEGROUNDS',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/578080/capsule_616x353.jpg',
-        descuento: 'Free',
-        precio: 'Gratis'
+      error: (error: any) => {
+        console.error('Error al cargar el catálogo:', error);
       }
-    ];
+    });
+  }
 
-    // 2. CATÁLOGO GENERAL: Simulamos que trajo juegos de la API
-    this.catalogoGeneral = [
-      {
-        titulo: 'Dark Souls III',
-        categoria: 'RPG / Acción',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/374320/capsule_616x353.jpg',
-        descuento: '-50%',
-        precio: '$29.99 USD'
+  cargarJuegosDestacados() {
+    // Consumimos el get general de juegos.
+    this.juegosService.obtenerTodosLosJuegos().subscribe({
+      next: (datosQueLlegan: any) => {
+        // Agarramos el array que manda el backend
+        let historialJuegos = datosQueLlegan.data || datosQueLlegan || [];
+
+        // 1. Damos vuelta el array con reverse() para que los más nuevos queden al principio
+        // 2. Cortamos el array con slice(0, 5) para quedarnos solo con los últimos 5
+        this.juegosDestacados = historialJuegos.reverse().slice(0, 5);
+
+        // Forzamos la detección de cambios para que el HTML se dibuje al instante
+        // Esto soluciona el bug de tener que apretar Ctrl+S en Visual Studio para ver las imágenes
+        this.cdr.detectChanges();
       },
-      {
-        titulo: 'Terraria',
-        categoria: 'Supervivencia / Mundo Abierto',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/105600/capsule_616x353.jpg',
-        descuento: '-20%',
-        precio: '$19.99 USD'
-      },
-      {
-        titulo: 'Fallout 76',
-        categoria: 'RPG / Multijugador',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/1151340/capsule_616x353.jpg',
-        descuento: '-75%',
-        precio: '$5.99 USD'
-      },
-      {
-        titulo: 'Left 4 Dead 2',
-        categoria: 'Zombies / Cooperativo',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/550/capsule_616x353.jpg',
-        descuento: '-90%',
-        precio: '$0.99 USD'
-      },
-      {
-        titulo: 'Cyberpunk 2077',
-        categoria: 'RPG / Mundo Abierto',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/1091500/capsule_616x353.jpg',
-        descuento: '-50%',
-        precio: '$29.99 USD'
-      },
-      {
-        titulo: 'Hollow Knight',
-        categoria: 'Metroidvania',
-        imagen: 'https://cdn.akamai.steamstatic.com/steam/apps/367520/capsule_616x353.jpg',
-        descuento: 'Free',
-        precio: 'Incluido en GamePass'
+      error: (error: any) => {
+        console.error('Error al cargar destacados:', error);
       }
-    ];
+    });
+  }
+
+  // --- FUNCIÓN PARA BUSCAR SUGERENCIAS ---
+  // El HTML llama a esta función, pero esta NO va al backend, solo avisa al Subject
+  buscarSugerencias(termino: string) {
+    if (!termino.trim()) {
+      // Si está vacío, limpiamos la pantalla rápido sin esperar
+      this.sugerenciasBusqueda = [];
+      this.mostrarSugerencias = false;
+      this.cdr.detectChanges();
+    } else {
+      // Le pasamos el texto al Subject para que empiece a contar los 200ms
+      this.buscadorSubject.next(termino);
+    }
+  }
+
+  // --- FUNCION DE TIEMPO ---
+  // Pasados los 200ms, esta funcion va al backend y trae las sugerencias reales
+  ejecutarBusquedaReal(termino: string) {
+    // Pegamos a la ruta de sugerencias del backend
+    this.juegosService.obtenerSugerencias(termino).subscribe({
+      next: (datosQueLlegan: any) => {
+        // Guardamos los resultados ÚNICAMENTE en el array de sugerencias (no tocamos el catálogo de abajo)
+        this.sugerenciasBusqueda = datosQueLlegan.data || datosQueLlegan || [];
+
+        // Cortamos el array para guardar ÚNICAMENTE un máximo de 5 sugerencias asi no se hace más largo
+        this.sugerenciasBusqueda = this.sugerenciasBusqueda.slice(0, 5);
+        
+        // Mostramos el menú desplegable
+        this.mostrarSugerencias = true;
+        
+        // Con esto angular dibuja al instante el menú flotante con las sugerencias
+        this.cdr.detectChanges();
+      },
+      error: (error: any) => {
+        console.error('Error al buscar sugerencias:', error);
+      }
+    });
+  }
+
+  // --- FUNCIÓN PARA CUANDO HACEN CLIC EN UNA SUGERENCIA DEL DESPLEGABLE ---
+  seleccionarSugerencia(juego: any) {
+    // Poner la redirección a la pagina de detalle
+    console.log('El usuario eligió:', juego.titulo);
+    
+    // Cerramos el menu desplegable y limpiamos las sugerencias
+    this.mostrarSugerencias = false;
+    this.sugerenciasBusqueda = [];
   }
 }
