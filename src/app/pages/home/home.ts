@@ -1,8 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JuegosService } from '../../services/juegos.service'; // Ajustado al nombre correcto del servicio
-import { Subject } from 'rxjs'; // Importamos Subject para el buscador
+import { JuegosService } from '../../services/juegos.service'; 
+import { PagoService } from '../../services/pago'; // 1. PASO 1: IMPORTAMOS EL NUEVO SERVICIO
+import { Subject } from 'rxjs'; 
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -17,41 +20,35 @@ export class HomeComponent implements OnInit {
   catalogoGeneral: any[] = [];
 
   // --- VARIABLES PARA EL BUSCADOR DESPLEGABLE ---
-  // Guardamos las sugerencias acá para no sobreescribir el catálogo general
   sugerenciasBusqueda: any[] = [];
-  // Controla si se muestra o se oculta el menú flotante
   mostrarSugerencias: boolean = false;
-
-  // NUEVO: Creamos un "Subject" (un canal de comunicación) para el buscador
+  esPremiumSticky: boolean = false;
   private buscadorSubject = new Subject<string>();
 
-  constructor(private juegosService: JuegosService, private cdr: ChangeDetectorRef) { }
+  // 2. PASO 2: INYECTAMOS EL PagoService EN EL CONSTRUCTOR (Separado por coma)
+  constructor(
+    private juegosService: JuegosService, 
+    private pagoService: PagoService, 
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.cargarCatalogoGeneral();
     this.cargarJuegosDestacados();
 
-    // NUEVO: Configuramos el "Debounce" (freno) apenas arranca la página
     this.buscadorSubject.pipe(
-      // Espera 200 milisegundos después de que el usuario deja de tipear
-      debounceTime(200), 
-      // Solo manda la petición si el texto realmente cambió (ej: si escribe y borra rápido, no busca)
-      distinctUntilChanged() 
+      debounceTime(200),
+      distinctUntilChanged()
     ).subscribe(termino => {
-      // Cuando pasen los 200ms, recién ahí ejecutamos la búsqueda real
       this.ejecutarBusquedaReal(termino);
     });
   }
 
   cargarCatalogoGeneral() {
-    // Pegamos el endpoint de "más jugados" para mostrarlo en el Home
     this.juegosService.obtenerMasJugados().subscribe({
-      // sino ponemos any no funciona
       next: (datosQueLlegan: any) => {
-        // Nos aseguramos de agarrar .data si viene empaquetado, o el arreglo directo
         this.catalogoGeneral = datosQueLlegan.data || datosQueLlegan || [];
-        
-        // Mostramos al instante
         this.cdr.detectChanges();
       },
       error: (error: any) => {
@@ -61,18 +58,10 @@ export class HomeComponent implements OnInit {
   }
 
   cargarJuegosDestacados() {
-    // Consumimos el get general de juegos.
     this.juegosService.obtenerTodosLosJuegos().subscribe({
       next: (datosQueLlegan: any) => {
-        // Agarramos el array que manda el backend
         let historialJuegos = datosQueLlegan.data || datosQueLlegan || [];
-
-        // 1. Damos vuelta el array con reverse() para que los más nuevos queden al principio
-        // 2. Cortamos el array con slice(0, 5) para quedarnos solo con los últimos 5
         this.juegosDestacados = historialJuegos.reverse().slice(0, 5);
-
-        // Forzamos la detección de cambios para que el HTML se dibuje al instante
-        // Esto soluciona el bug de tener que apretar Ctrl+S en Visual Studio para ver las imágenes
         this.cdr.detectChanges();
       },
       error: (error: any) => {
@@ -81,36 +70,22 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // --- FUNCIÓN PARA BUSCAR SUGERENCIAS ---
-  // El HTML llama a esta función, pero esta NO va al backend, solo avisa al Subject
   buscarSugerencias(termino: string) {
     if (!termino.trim()) {
-      // Si está vacío, limpiamos la pantalla rápido sin esperar
       this.sugerenciasBusqueda = [];
       this.mostrarSugerencias = false;
       this.cdr.detectChanges();
     } else {
-      // Le pasamos el texto al Subject para que empiece a contar los 200ms
       this.buscadorSubject.next(termino);
     }
   }
 
-  // --- FUNCION DE TIEMPO ---
-  // Pasados los 200ms, esta funcion va al backend y trae las sugerencias reales
   ejecutarBusquedaReal(termino: string) {
-    // Pegamos a la ruta de sugerencias del backend
     this.juegosService.obtenerSugerencias(termino).subscribe({
       next: (datosQueLlegan: any) => {
-        // Guardamos los resultados ÚNICAMENTE en el array de sugerencias (no tocamos el catálogo de abajo)
         this.sugerenciasBusqueda = datosQueLlegan.data || datosQueLlegan || [];
-
-        // Cortamos el array para guardar ÚNICAMENTE un máximo de 5 sugerencias asi no se hace más largo
         this.sugerenciasBusqueda = this.sugerenciasBusqueda.slice(0, 5);
-        
-        // Mostramos el menú desplegable
         this.mostrarSugerencias = true;
-        
-        // Con esto angular dibuja al instante el menú flotante con las sugerencias
         this.cdr.detectChanges();
       },
       error: (error: any) => {
@@ -119,13 +94,78 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // --- FUNCIÓN PARA CUANDO HACEN CLIC EN UNA SUGERENCIA DEL DESPLEGABLE ---
   seleccionarSugerencia(juego: any) {
-    // Poner la redirección a la pagina de detalle
     console.log('El usuario eligió:', juego.titulo);
-    
-    // Cerramos el menu desplegable y limpiamos las sugerencias
     this.mostrarSugerencias = false;
     this.sugerenciasBusqueda = [];
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const pixelesRecorridos = window.scrollY || document.documentElement.scrollTop;
+    this.esPremiumSticky = pixelesRecorridos > 1000;
+    this.cdr.detectChanges();
+  }
+
+  juegosPremium: any[] = [
+    { juegoId: 'p1', titulo: 'GTA VI (Alpha Build)', precio: 2500, imagen_portada: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=400' },
+    { juegoId: 'p2', titulo: 'Hades II (Early Access)', precio: 1800, imagen_portada: 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=400' },
+    { juegoId: 'p3', titulo: 'Silksong (Beta Test)', precio: 1500, imagen_portada: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=400' },
+    { juegoId: 'p4', titulo: 'Witcher 4 (Tech Demo)', precio: 3000, imagen_portada: 'https://images.unsplash.com/photo-1612287230202-1bf1d85d1bdf?q=80&w=400' },
+    { juegoId: 'p5', titulo: 'Cyberpunk 2 (Concept Dev)', precio: 2200, imagen_portada: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=400' }
+  ];
+
+  // 3. PASO 3: CONECTAMOS LA LÓGICA DE MERCADO PAGO REAL
+  comprarAcceso(juego: any) {
+    const token = localStorage.getItem('token'); 
+
+    if (!token) {
+      Swal.fire({
+        title: '¡Acceso Restringido!',
+        text: 'Para adquirir pases de pre-lanzamiento e ingresar al simulador debés iniciar sesión.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0dcaf0',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ir al Login',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Acá podés poner la redirección si tenés el router activo
+          this.router.navigate(['./Login']);
+        }
+      });
+      return;
+    }
+
+    console.log("Generando preferencia para:", juego.titulo);
+    
+    // Mostramos la alerta de carga
+    Swal.fire({
+      title: 'Procesando con Mercado Pago...',
+      text: `Preparando tu orden para ${juego.titulo}`,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    // Llamamos al servicio para pedirle la preferencia al backend
+    this.pagoService.crearPreferencia(juego.juegoId, juego.titulo, juego.precio).subscribe({
+      next: (res:any) => {
+        Swal.close(); // Cerramos el loading
+        if (res.status === "1" && res.init_point) {
+          // ¡🚀 REDIRECCIÓN! Viajamos a la pasarela de Mercado Pago de verdad
+          window.location.href = res.init_point;
+        } else {
+          Swal.fire('Error', 'No se pudo generar el enlace de pago.', 'error');
+        }
+      },
+      error: (err:any) => {
+        Swal.close();
+        console.error('Error al conectar con el backend:', err);
+        Swal.fire('Error', 'Hubo un problema al procesar el pago. Comprobá que el backend esté encendido.', 'error');
+      }
+    });
   }
 }

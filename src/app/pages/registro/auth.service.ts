@@ -15,7 +15,7 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/loginUser`, credentials);
   }
 
-  // 🔥 NUEVO MÉTODO: Apunta directamente al guardado en tu base de datos PostgreSQL
+  // Apunta directamente al guardado en tu base de datos PostgreSQL
   registro(userData: any): Observable<any> {
     return this.http.post(`${this.API_URL}/`, userData); 
   }
