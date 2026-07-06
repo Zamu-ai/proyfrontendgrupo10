@@ -133,6 +133,7 @@ seleccionarSugerencia(juego: any) {
     // Pasamos a la pag de detalle con el ID
     // Asegurar si el backend devuelve el ID
     this.router.navigate(['/juego', juego.id]); 
+    this.cargarJuegosDestacados();
   }
 
   // --- NUEVA FUNCIÓN: Guarda el juego en la memoria del navegador ---

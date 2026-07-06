@@ -16,7 +16,7 @@ export class OuathCallback implements OnInit{
       const token = params['token'];
       if(token){
         localStorage.setItem('token',token);
-//esto redirige al home v
+    //esto redirige al home v
         this.router.navigate(['/home']);
       }else{
         //si no hay token, hubo error, redirigir al login
