@@ -29,4 +29,10 @@ export class JuegosService {
   obtenerDetalle(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/detalle/${id}`);
   }
+
+  // Método para obtener el detalle de un juego por su ID
+  getDetalleJuego(id: string) {
+    // Le quitamos el '/api' a la URL para que coincida con el index.js del backend
+    return this.http.get(`http://localhost:3000/juego/detalle/${id}`);
+  }
 }
