@@ -62,24 +62,27 @@ export class HomeComponent implements OnInit {
   }
 
   cargarJuegosDestacados() {
-    // Consumimos el get general de juegos.
-    this.juegosService.obtenerTodosLosJuegos().subscribe({
-      next: (datosQueLlegan: any) => {
-        // Agarramos el array que manda el backend
-        let historialJuegos = datosQueLlegan.data || datosQueLlegan || [];
+    // Leemos la memoria
+    let historialStr = localStorage.getItem('historialBuscados');
+    let historial = historialStr ? JSON.parse(historialStr) : [];
 
-        // 1. Damos vuelta el array con reverse() para que los más nuevos queden al principio
-        // 2. Cortamos el array con slice(0, 5) para quedarnos solo con los últimos 5
-        this.juegosDestacados = historialJuegos.reverse().slice(0, 5);
-
-        // Forzamos la detección de cambios para que el HTML se dibuje al instante
-        // Esto soluciona el bug de tener que apretar Ctrl+S en Visual Studio para ver las imágenes
-        this.cdr.detectChanges();
-      },
-      error: (error: any) => {
-        console.error('Error al cargar destacados:', error);
-      }
-    });
+    if (historial.length > 0) {
+      // Si hay juegos guardados en el historial, mostramos esos
+      this.juegosDestacados = historial;
+      this.cdr.detectChanges();
+    } else {
+      // Si está vacío (primer ingreso), traemos los de la base de datos por defecto
+      this.juegosService.obtenerTodosLosJuegos().subscribe({
+        next: (datosQueLlegan: any) => {
+          let historialJuegos = datosQueLlegan.data || datosQueLlegan || [];
+          this.juegosDestacados = historialJuegos.reverse().slice(0, 5);
+          this.cdr.detectChanges();
+        },
+        error: (error: any) => {
+          console.error('Error al cargar destacados:', error);
+        }
+      });
+    }
   }
 
   // --- FUNCIÓN PARA BUSCAR SUGERENCIAS ---
@@ -125,10 +128,32 @@ seleccionarSugerencia(juego: any) {
     // Cerramos el menú
     this.mostrarSugerencias = false;
     this.sugerenciasBusqueda = [];
+    this.guardarEnHistorialLocal(juego);
     
     // Pasamos a la pag de detalle con el ID
     // Asegurar si el backend devuelve el ID
     this.router.navigate(['/juego', juego.id]); 
+  }
+
+  // --- NUEVA FUNCIÓN: Guarda el juego en la memoria del navegador ---
+  guardarEnHistorialLocal(juego: any) {
+    // 1. Traemos lo que haya en memoria (si no hay nada, empezamos con un array vacío)
+    let historialStr = localStorage.getItem('historialBuscados');
+    let historial = historialStr ? JSON.parse(historialStr) : [];
+
+    // 2. Filtramos el array para borrar el juego si ya estaba (así no se repite en el carrusel)
+    historial = historial.filter((j: any) => j.id !== juego.id);
+
+    // 3. Agregamos el juego clickeado al principio de la lista
+    historial.unshift(juego);
+
+    // 4. Si la lista tiene más de 5 juegos, lo cortamos
+    if (historial.length > 5) {
+      historial = historial.slice(0, 5);
+    }
+
+    // 5. Guardamos la lista actualizada en la memoria del navegador
+    localStorage.setItem('historialBuscados', JSON.stringify(historial));
   }
 
   // --- NUEVA FUNCIÓN PARA LAS TARJETAS DEL CATÁLOGO ---
