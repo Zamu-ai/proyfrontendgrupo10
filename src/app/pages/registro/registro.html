@@ -9,31 +9,49 @@
             <p class="text-white-50 mb-4">Únete a la comunidad gamer más grande</p>
 
             <form [formGroup]="registroForm" (ngSubmit)="onRegistro()">
-              
+
               <div class="row">
                 <div class="col-12 col-md-6 mb-3 text-start">
                   <label class="form-label text-info" for="nombre">Nombre</label>
-                  <input type="text" id="nombre" formControlName="nombre" class="form-control bg-secondary text-white border-0" placeholder="Ej: Pablo" />
-                  <div *ngIf="registroForm.get('nombre')?.touched && registroForm.get('nombre')?.invalid" class="text-danger small mt-1">Obligatorio.</div>
+                  <input type="text" id="nombre" formControlName="nombre"
+                    class="form-control bg-secondary text-white border-0" placeholder="Ej: Pablo" />
+                  <div *ngIf="registroForm.get('nombre')?.touched && registroForm.get('nombre')?.invalid"
+                    class="text-danger small mt-1">Obligatorio.</div>
                 </div>
-                
+
                 <div class="col-12 col-md-6 mb-3 text-start">
                   <label class="form-label text-info" for="apellido">Apellido</label>
-                  <input type="text" id="apellido" formControlName="apellido" class="form-control bg-secondary text-white border-0" placeholder="Ej: Gomez" />
-                  <div *ngIf="registroForm.get('apellido')?.touched && registroForm.get('apellido')?.invalid" class="text-danger small mt-1">Obligatorio.</div>
+                  <input type="text" id="apellido" formControlName="apellido"
+                    class="form-control bg-secondary text-white border-0" placeholder="Ej: Gomez" />
+                  <div *ngIf="registroForm.get('apellido')?.touched && registroForm.get('apellido')?.invalid"
+                    class="text-danger small mt-1">Obligatorio.</div>
                 </div>
               </div>
 
               <div class="mb-3 text-start">
                 <label class="form-label text-info" for="username">Nombre de Usuario</label>
-                <input type="text" id="username" formControlName="username" class="form-control bg-secondary text-white border-0" placeholder="Ej: pablito_gamer" />
-                <div *ngIf="registroForm.get('username')?.touched && registroForm.get('username')?.invalid" class="text-danger small mt-1">Mínimo 4 caracteres.</div>
+                <input type="text" id="username" formControlName="username"
+                  class="form-control bg-secondary text-white border-0" placeholder="Ej: pablito_gamer" />
+                <div *ngIf="registroForm.get('username')?.touched && registroForm.get('username')?.invalid"
+                  class="text-danger small mt-1">Mínimo 4 caracteres.</div>
               </div>
 
               <div class="mb-3 text-start">
                 <label class="form-label text-info" for="password">Contraseña</label>
-                <input type="password" id="password" formControlName="password" class="form-control bg-secondary text-white border-0" placeholder="••••••••" />
-                <div *ngIf="registroForm.get('password')?.touched && registroForm.get('password')?.invalid" class="text-danger small mt-1">Mínimo 6 caracteres.</div>
+                <input type="password" id="password" formControlName="password"
+                  class="form-control bg-secondary text-white border-0" placeholder="••••••••" />
+                <div *ngIf="registroForm.get('password')?.touched && registroForm.get('password')?.invalid"
+                  class="text-danger small mt-1">Mínimo 6 caracteres.</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Correo Electrónico</label>
+                <input type="email" formControlName="email" class="form-control" placeholder="ejemplo@correo.com">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-white">URL de tu Foto de Perfil (Opcional)</label>
+                <input type="text" formControlName="foto" class="form-control"
+                  placeholder="http://imagen.com/mi-foto.jpg">
               </div>
 
               <!-- <div class="mb-4 text-start">
@@ -52,7 +70,7 @@
           </div>
 
           <div class="mt-4">
-            <p class="mb-0 text-white-50">¿Ya tienes una cuenta? 
+            <p class="mb-0 text-white-50">¿Ya tienes una cuenta?
               <a routerLink="/Login" class="text-info fw-bold style-link">Inicia sesión</a>
             </p>
           </div>

@@ -14,6 +14,7 @@ export const routes: Routes = [
   {path: 'Registro', component: RegistroComponent},
   { path: 'JuegoDetalle', component: JuegoDetalle }, 
   { path: 'Registro', component: RegistroComponent },
-  { path: '**', redirectTo: '' },
-  {path: 'pago-exitoso', component: PagoExitosoComponent}
+  {path: 'pago-exitoso', component: PagoExitosoComponent},
+  { path: '**', redirectTo: '' }
+  
 ];

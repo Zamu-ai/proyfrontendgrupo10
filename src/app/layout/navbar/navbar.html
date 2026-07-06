@@ -30,9 +30,16 @@
           <i class="bi" [ngClass]="esModoOscuro ? 'bi-moon-fill' : 'bi-sun-fill'"></i>
         </button>
 
-        <button type="button" class="btn custom-btn-login fw-bold px-4" routerLink="Login">
-          <i class="bi bi-chat-square-text-fill me-1"></i> INICIAR SESIÓN
-        </button>
+        <button *ngIf="!estaLogueado()" routerLink="/Login" class="btn btn-info text-white">
+  INICIAR SESIÓN
+</button>
+
+<div *ngIf="estaLogueado()" class="d-flex align-items-center gap-3">
+  <span class="text-white fw-bold">🎮 ¡Hola, {{ obtenerNombreUsuario() }}!</span>
+  <button (click)="cerrarSesion()" class="btn btn-outline-danger btn-sm rounded-pill">
+    Cerrar Sesión
+  </button>
+</div>
 
       </div>
     </div>

@@ -31,7 +31,9 @@ export class RegistroComponent implements OnInit {
             apellido: ['', Validators.required],
             username: ['', [Validators.required, Validators.minLength(4)]],
             password: ['', [Validators.required, Validators.minLength(6)]],
-            perfil: ['Usuario Normal', Validators.required] // Por defecto toma "Usuario Normal" como en Postman
+            perfil: ['Usuario Normal', Validators.required], // Por defecto toma "Usuario Normal" como en Postman
+            email: ['', [Validators.required, Validators.email]], // 🚀 Nuevo
+            foto: [''] // 🚀 Nuevo (opcional, sin Validators.required)
         });
     }
 
