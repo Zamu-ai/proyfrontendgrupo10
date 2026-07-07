@@ -15,6 +15,13 @@
         <li class="nav-item">
           <a class="nav-link text-uppercase" routerLink="JuegoDetalle" routerLinkActive="active">Catalogo</a>     
         </li>
+        
+        <li class="nav-item" *ngIf="usuarioAutenticado && (usuarioActual.rol === 'critico' || usuarioActual.rol === 'admin')">
+          <a class="nav-link text-uppercase text-info" routerLink="/Tienda" routerLinkActive="active">Tienda</a>
+        </li>
+        <li class="nav-item" *ngIf="usuarioAutenticado && usuarioActual.rol === 'admin'">
+          <a class="nav-link text-uppercase text-success" routerLink="/Admin" routerLinkActive="active">Panel Admin</a>
+        </li>
       </ul>
 
       <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
@@ -30,16 +37,32 @@
           <i class="bi" [ngClass]="esModoOscuro ? 'bi-moon-fill' : 'bi-sun-fill'"></i>
         </button>
 
-        <button *ngIf="!estaLogueado()" routerLink="/Login" class="btn btn-info text-white">
-  INICIAR SESIÓN
-</button>
+        <button *ngIf="!usuarioAutenticado" routerLink="/Login" class="btn btn-info text-white fw-bold px-4">
+          INICIAR SESIÓN
+        </button>
 
-<div *ngIf="estaLogueado()" class="d-flex align-items-center gap-3">
-  <span class="text-white fw-bold">🎮 ¡Hola, {{ obtenerNombreUsuario() }}!</span>
-  <button (click)="cerrarSesion()" class="btn btn-outline-danger btn-sm rounded-pill">
-    Cerrar Sesión
-  </button>
-</div>
+        <div *ngIf="usuarioAutenticado" class="d-flex align-items-center gap-3">
+          
+          <div class="d-flex align-items-center gap-2">
+            <span *ngIf="usuarioActual.rol === 'critico'" 
+                  class="badge bg-warning text-dark border border-light" title="Usuario Destacado">
+              CRÍTICO
+            </span>
+            
+            <span *ngIf="usuarioActual.rol === 'admin'" 
+                  class="badge bg-success text-white border border-light shadow-sm" title="Administrador del Sistema">
+              ADMIN
+            </span>
+
+            <span class="text-white fw-bold">🎮 ¡Hola, {{ usuarioActual.nombre }}!</span>
+            <img [src]="usuarioActual.fotoPerfil" alt="Perfil" class="rounded-circle object-fit-cover border border-2 border-info" width="40" height="40" style="cursor: pointer;">
+          </div>
+
+          <button (click)="cerrarSesion()" class="btn btn-outline-danger btn-sm rounded-pill">
+            Cerrar Sesión
+          </button>
+          
+        </div>
 
       </div>
     </div>
