@@ -12,7 +12,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar implements OnInit { // <-- Corregido a minúscula
+export class Navbar implements OnInit { 
   esModoOscuro: boolean = true;
 
   // --- NUEVAS VARIABLES PARA EL BUSCADOR DEL NAVBAR ---
