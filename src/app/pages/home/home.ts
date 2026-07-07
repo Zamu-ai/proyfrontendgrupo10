@@ -100,6 +100,7 @@ export class HomeComponent implements OnInit {
 
   // --- FUNCIÓN PARA CUANDO HACEN CLIC EN UNA SUGERENCIA DEL DESPLEGABLE ---
 seleccionarSugerencia(juego: any) {
+    console.log('Sugerencia clickeada:', juego); // Log para ver qué juego se selecciona
     // Cerramos el menú
     this.mostrarSugerencias = false;
     this.sugerenciasBusqueda = [];
@@ -111,6 +112,7 @@ seleccionarSugerencia(juego: any) {
 
   // --- NUEVA FUNCIÓN PARA LAS TARJETAS DEL CATÁLOGO ---
     verDetalle(id: number) {
+    console.log('ID que viaja al detalle:', id); // Log para ver el ID
     this.router.navigate(['/JuegoDetalle', id]);
   }
 
@@ -135,6 +137,14 @@ obtenerIconosPlataformas(plataformas: any[]): string[] {
     });
 
     return Array.from(iconos);
+  }
+    // Funcion para el nuevo componente de resultados, que se llama desde el buscador del navbar
+
+  irAResultados(termino: string) {
+    if (termino.trim()) {
+      this.mostrarSugerencias = false;
+      this.router.navigate(['/Resultados', termino.trim()]);
+    }
   }
 
   @HostListener('window:scroll', [])
@@ -187,12 +197,13 @@ obtenerIconosPlataformas(plataformas: any[]): string[] {
       }
     });
 
+
     // Llamamos al servicio para pedirle la preferencia al backend
     this.pagoService.crearPreferencia(juego.juegoId, juego.titulo, juego.precio).subscribe({
       next: (res:any) => {
         Swal.close(); // Cerramos el loading
         if (res.status === "1" && res.init_point) {
-          // ¡🚀 REDIRECCIÓN! Viajamos a la pasarela de Mercado Pago de verdad
+          // ¡REDIRECCIÓN! Viajamos a la pasarela de Mercado Pago de verdad
           window.location.href = res.init_point;
         } else {
           Swal.fire('Error', 'No se pudo generar el enlace de pago.', 'error');
