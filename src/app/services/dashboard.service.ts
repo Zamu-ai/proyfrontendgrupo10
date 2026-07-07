@@ -10,7 +10,7 @@ export class DashboardService {
   constructor(private apiDashboard:HttpClient){}
 
   //pa obtener token
-   private getToken(): string | null {
+  private getToken(): string | null {
     return localStorage.getItem('token');
   }
 
