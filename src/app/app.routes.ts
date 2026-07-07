@@ -6,6 +6,8 @@ import { RegistroComponent } from './pages/registro/registro';
 import { OuathCallback } from './pages/ouath-callback/ouath-callback';
 import { PagoExitosoComponent } from './pages/pago-exitoso/pago-exitoso';
 import { ResultadosComponent } from './pages/resultados/resultados';
+// Componente de Uriel
+import { Dashboard } from './pages/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, 
@@ -19,6 +21,9 @@ export const routes: Routes = [
   // Soporte para ruta de tarjeta del catálogo y para ruta de sugerencia del buscador
   { path: 'JuegoDetalle/:id', component: JuegoDetalle }, 
   { path: 'juego/:id', component: JuegoDetalle },
+
+  // Ruta boton del navbar para ir al dashboard de admin
+  { path: 'Admin', component: Dashboard },
 
   // El comodín comodín va ÚNICAMENTE al final de todo el archivo
   { path: '**', redirectTo: '' } 
