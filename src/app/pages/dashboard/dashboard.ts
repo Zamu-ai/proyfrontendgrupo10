@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {BaseChartDirective} from 'ng2-charts';
 import { DashboardService } from '../../services/dashboard.service';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,FormsModule,BaseChartDirective],
@@ -43,7 +46,7 @@ export class Dashboard implements OnInit{
   configGraficoBarras:any={labels:[],datasets:[]}
   opcionesBarras={responsive:true}
 
-  constructor(private serviciosDashboard: DashboardService){}
+  constructor(private serviciosDashboard: DashboardService, private cdr: ChangeDetectorRef){}
 
   ngOnInit(): void {
     this.cargarTodo()
@@ -64,6 +67,7 @@ export class Dashboard implements OnInit{
      next:(respuesta)=>{
         if(respuesta.status==='1'){
           this.estadisticas=respuesta.data
+          this.cdr.detectChanges();
         }
      },
      error:(error)=>console.error('Error al cargar estadisticas',error)
@@ -78,6 +82,7 @@ export class Dashboard implements OnInit{
         if (respuesta.status === '1') {
           this.loginsPorDia = respuesta.data
           this.actualizarGraficoLinea()
+          this.cdr.detectChanges();
         }
       },
       error: (error) => console.error('Error al cargar ingresos:', error)
@@ -92,6 +97,7 @@ export class Dashboard implements OnInit{
         if (respuesta.status === '1') {
           this.accionesPorTipo = respuesta.data
           this.actualizarGraficoTorta()
+          this.cdr.detectChanges();
         }
       },
       error: (error) => console.error('Error al cargar actividades:', error)
@@ -105,6 +111,7 @@ export class Dashboard implements OnInit{
         if (respuesta.status === '1') {
           this.usuariosActivos = respuesta.data
           this.actualizarGraficoBarras()
+          this.cdr.detectChanges();
         }
       },
       error: (error) => console.error('Error al cargar usuarios top:', error)
@@ -123,6 +130,7 @@ obtenerAuditoria():void{
         this.registrosAuditoria=respuesta.data
         this.totalRegistros=respuesta.total
         this.totalPaginas=respuesta.totalPaginas
+        this.cdr.detectChanges();
       }
     },
     error:(error)=>console.error('Error al cargar auditoria',error)
@@ -137,6 +145,7 @@ obtenerJuegosBuscados(): void {
       next: (respuesta) => {
         if (respuesta.status === '1') {
           this.juegosBuscados = respuesta.data
+          this.cdr.detectChanges();
         }
       },
       error: (error) => console.error('Error al cargar juegos top:', error)
