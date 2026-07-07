@@ -9,8 +9,8 @@
 
         <div class="p-1 rounded-pill custom-neon-border">
           <div class="input-group input-group-lg">
-            <input #inputBuscador (keyup)="buscarSugerencias(inputBuscador.value)" type="text" class="form-control border-0 rounded-start-pill font-monospace ps-4 custom-input" placeholder="Buscar juegos por título..." aria-label="Buscar juegos">
-            <button class="btn btn-info text-dark fw-bold text-uppercase border-0 rounded-end-pill px-5 custom-btn" type="button" style="letter-spacing: 2px;">BUSCAR</button>
+            <input #inputBuscador (keyup.enter)="irAResultados(inputBuscador.value)" (keyup)="buscarSugerencias(inputBuscador.value)" type="text" class="form-control border-0 rounded-start-pill font-monospace ps-4 custom-input" placeholder="Buscar juegos por título..." aria-label="Buscar juegos">
+            <button (click)="irAResultados(inputBuscador.value)" class="btn btn-info text-dark fw-bold text-uppercase border-0 rounded-end-pill px-5 custom-btn" type="button" style="letter-spacing: 2px;">BUSCAR</button>
           </div>
         </div>
 
@@ -137,7 +137,7 @@
       <div class="card h-100 bg-body-tertiary border-secondary shadow-sm"
         (click)="verDetalle(juego.id)"
         style="cursor: pointer;">
-          
+        
         <img [src]="juego.imagen_portada || juego.imagen" class="card-img-top custom-card-img" [alt]="juego.titulo">
         
         <div class="card-body d-flex flex-column">
