@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -8,6 +8,20 @@ import { Observable } from 'rxjs';
 export class DashboardService {
   private url_dashboard='http://localhost:3000/api/dashboard';
   constructor(private apiDashboard:HttpClient){}
+
+  //pa obtener token
+   private getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  // pa crear headers con el token
+  private getHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getMetricas():Observable<any>{
     return this.apiDashboard.get(`${this.url_dashboard}/metricas`)
