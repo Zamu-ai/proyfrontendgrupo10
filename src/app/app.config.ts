@@ -4,23 +4,25 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
  
 export const authInterceptor=(req:any, next: any)=>{
-  const token= localStorage.getItem('token');
-  if(token){
-    req=req.clone({
-      setHeaders:{
+  //otra vez el req es la peticion HTTP entrante
+  //next: funcion que continua con el flujo de la peticion
+  const token= localStorage.getItem('token'); //obtengo el token
+  if(token){ //si  hay token
+    req=req.clone({ //clono
+      setHeaders:{// es la forma al ternativa de agregar los headers
         Authorization:`Bearer ${token}`
       }
     });
   }
-  return next(req)
+  return next(req)//continuo la peticion modificada o no
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(
-      withInterceptors([authInterceptor])
+    provideHttpClient(//configura el cliente HTTP
+      withInterceptors([authInterceptor]) //Registra el interceptor
     )
   ]
 };
