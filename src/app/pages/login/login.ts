@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // 🔥 Importamos el enrutador para redirigir
-import { AuthService } from '../../services/auth.service'; // 🔥 Importamos tu nuevo servicio
+import { Router } from '@angular/router'; // Importamos el enrutador para redirigir
+import { AuthService } from '../../services/auth.service'; // Importamos tu nuevo servicio
 import Swal from 'sweetalert2';
 
 @Component({
@@ -65,12 +65,32 @@ export class LoginComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al conectar:', err);
-          alert('Error de autenticación: ' + (err.error?.msg || 'Servidor desconectado'));
+          
+          // 🚀 ADVERTENCIA 1: Cambiamos el alert() feo por un SweetAlert impecable
+          Swal.fire({
+            title: 'Error de Autenticación',
+            text: err.error?.msg || 'Usuario o contraseña incorrectos. Intentá de nuevo.',
+            icon: 'error',
+            background: '#1a1a1a',
+            color: '#fff',
+            confirmButtonColor: '#fe4c55' // Rojo/Naranja para errores
+          });
         }
       });
 
     } else {
       this.loginForm.markAllAsTouched();
+
+      // 🚀 ADVERTENCIA 2: Si intenta enviar el formulario vacío o incompleto
+      Swal.fire({
+        title: 'Campos Incompletos',
+        text: 'Por favor, completá correctamente el usuario y la contraseña antes de ingresar.',
+        icon: 'warning',
+        background: '#1a1a1a',
+        color: '#fff',
+        confirmButtonColor: '#ffc107' // Amarillo de advertencia
+      });
     }
   }
+  
 }

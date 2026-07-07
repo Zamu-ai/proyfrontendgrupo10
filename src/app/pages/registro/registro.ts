@@ -31,7 +31,9 @@ export class RegistroComponent implements OnInit {
             apellido: ['', Validators.required],
             username: ['', [Validators.required, Validators.minLength(4)]],
             password: ['', [Validators.required, Validators.minLength(6)]],
-            perfil: ['Usuario Normal', Validators.required] // Por defecto toma "Usuario Normal" como en Postman
+            perfil: ['Usuario Normal', Validators.required], // Por defecto toma "Usuario Normal" como en Postman
+            email: ['', [Validators.required, Validators.email]], // 🚀 Nuevo
+            foto: [this.avatarSeleccionado] // 🚀 Nuevo (opcional, sin Validators.required)
         });
     }
 
@@ -68,5 +70,24 @@ export class RegistroComponent implements OnInit {
         } else {
             this.registroForm.markAllAsTouched();
         }
+    }
+    // 1. Definimos la propiedad para guardar el avatar elegido (dejamos el primero por defecto)
+    avatarSeleccionado: string = 'https://api.dicebear.com/7.x/bottts/svg?seed=Shadow';
+
+    // 2. Armamos la galería de opciones fijas con diferentes semillas (seeds) divertidas
+    listaAvatares: string[] = [
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Shadow',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Neon',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Pixel',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Ghost',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Viper'
+    ];
+
+    // 3. Función para cambiar la selección activa cuando el usuario hace clic
+    seleccionarAvatar(url: string) {
+        this.avatarSeleccionado = url;
+        this.registroForm.patchValue({
+            foto:url
+        });
     }
 }
