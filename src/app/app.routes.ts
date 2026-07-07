@@ -12,11 +12,9 @@ export const routes: Routes = [
   { path: 'Login', component: LoginComponent },
   { path: 'oauth-callback', component: OuathCallback },
   { path: 'Registro', component: RegistroComponent },
-<<<<<<< HEAD
   {path: 'pago-exitoso', component: PagoExitosoComponent},
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
   
-=======
   
   // Soporte para la ruta de la tarjeta del catálogo de tu compañero
   { path: 'JuegoDetalle/:id', component: JuegoDetalle }, 
@@ -25,5 +23,4 @@ export const routes: Routes = [
   { path: 'juego/:id', component: JuegoDetalle },
 
   { path: '**', redirectTo: '' } 
->>>>>>> main
 ];

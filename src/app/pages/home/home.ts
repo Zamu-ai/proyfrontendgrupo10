@@ -62,7 +62,6 @@ export class HomeComponent implements OnInit {
   }
 
   cargarJuegosDestacados() {
-<<<<<<< HEAD
     this.juegosService.obtenerTodosLosJuegos().subscribe({
       next: (datosQueLlegan: any) => {
         let historialJuegos = datosQueLlegan.data || datosQueLlegan || [];
@@ -73,29 +72,6 @@ export class HomeComponent implements OnInit {
         console.error('Error al cargar destacados:', error);
       }
     });
-=======
-    // Leemos la memoria
-    let historialStr = localStorage.getItem('historialBuscados');
-    let historial = historialStr ? JSON.parse(historialStr) : [];
-
-    if (historial.length > 0) {
-      // Si hay juegos guardados en el historial, mostramos esos
-      this.juegosDestacados = historial;
-      this.cdr.detectChanges();
-    } else {
-      // Si está vacío (primer ingreso), traemos los de la base de datos por defecto
-      this.juegosService.obtenerTodosLosJuegos().subscribe({
-        next: (datosQueLlegan: any) => {
-          let historialJuegos = datosQueLlegan.data || datosQueLlegan || [];
-          this.juegosDestacados = historialJuegos.reverse().slice(0, 5);
-          this.cdr.detectChanges();
-        },
-        error: (error: any) => {
-          console.error('Error al cargar destacados:', error);
-        }
-      });
-    }
->>>>>>> main
   }
 
   buscarSugerencias(termino: string) {
@@ -127,33 +103,10 @@ seleccionarSugerencia(juego: any) {
     // Cerramos el menú
     this.mostrarSugerencias = false;
     this.sugerenciasBusqueda = [];
-    this.guardarEnHistorialLocal(juego);
     
     // Pasamos a la pag de detalle con el ID
     // Asegurar si el backend devuelve el ID
     this.router.navigate(['/juego', juego.id]); 
-    this.cargarJuegosDestacados();
-  }
-
-  // --- NUEVA FUNCIÓN: Guarda el juego en la memoria del navegador ---
-  guardarEnHistorialLocal(juego: any) {
-    // 1. Traemos lo que haya en memoria (si no hay nada, empezamos con un array vacío)
-    let historialStr = localStorage.getItem('historialBuscados');
-    let historial = historialStr ? JSON.parse(historialStr) : [];
-
-    // 2. Filtramos el array para borrar el juego si ya estaba (así no se repite en el carrusel)
-    historial = historial.filter((j: any) => j.id !== juego.id);
-
-    // 3. Agregamos el juego clickeado al principio de la lista
-    historial.unshift(juego);
-
-    // 4. Si la lista tiene más de 5 juegos, lo cortamos
-    if (historial.length > 5) {
-      historial = historial.slice(0, 5);
-    }
-
-    // 5. Guardamos la lista actualizada en la memoria del navegador
-    localStorage.setItem('historialBuscados', JSON.stringify(historial));
   }
 
   // --- NUEVA FUNCIÓN PARA LAS TARJETAS DEL CATÁLOGO ---
