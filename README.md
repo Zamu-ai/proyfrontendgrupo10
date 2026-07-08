@@ -233,18 +233,3 @@ src/
       dashboard.service.ts
 ```
 
-## 10) Pruebas
-
-Ejecutar:
-
-```bash
-npm test
-```
-
-Hay archivos `*.spec.ts` en componentes, servicios e interceptor.
-
-## 11) Observaciones de configuración
-
-- El frontend tiene URLs de backend hardcodeadas a `http://localhost:3000`.
-- Para producción, conviene mover estas URLs a configuración de entorno.
-- El correcto funcionamiento del login OAuth y pagos depende de la configuración del backend.
