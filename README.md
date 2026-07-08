@@ -1,59 +1,235 @@
-# TPFinalFront
+# Proyfrontendgrupo10 (Angular)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Documentación técnica detallada en español del frontend Angular del proyecto.
 
-## Development server
+## 1) Descripción general
 
-To start a local development server, run:
+Esta aplicación es un frontend construido con Angular (componentes standalone) orientado a un catálogo gamer.  
+Incluye:
 
-```bash
-ng serve
-```
+- listado y búsqueda de juegos
+- detalle de juego
+- autenticación (login/registro + callback OAuth)
+- pagos con Mercado Pago (flujo frontend + confirmación en backend)
+- dashboard administrativo con métricas, gráficos y exportación (Excel/PDF)
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+El frontend consume un backend local en `http://localhost:3000`.
 
-## Code scaffolding
+## 2) Tecnologías principales
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Angular 21** (standalone components, router, HttpClient, forms reactivas)
+- **RxJS** (debounce y flujos reactivos)
+- **Bootstrap 5 + Bootstrap Icons**
+- **SweetAlert2** (notificaciones UI)
+- **Chart.js + ng2-charts** (gráficos en dashboard)
+- **xlsx** y **jsPDF + jspdf-autotable** (exportaciones)
+- **Vitest** (tests)
 
-```bash
-ng generate component component-name
-```
+## 3) Requisitos previos
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Node.js y npm
+- Angular CLI (opcional global)
+- Backend del proyecto corriendo en `http://localhost:3000`
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 4) Instalación y ejecución
 
 ```bash
-ng test
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+La app queda disponible en `http://localhost:4200`.
 
-For end-to-end (e2e) testing, run:
+### Scripts disponibles
 
 ```bash
-ng e2e
+npm start        # ng serve
+npm run build    # build de producción
+npm run watch    # build en modo watch (development)
+npm test         # tests unitarios
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 5) Arquitectura de la aplicación
 
-## Additional Resources
+### 5.1 Estructura base
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+El proyecto usa componentes standalone (sin NgModule principal), configurados desde:
+
+- `src/main.ts`
+- `src/app/app.config.ts`
+- `src/app/app.routes.ts`
+
+### 5.2 Layout principal
+
+- `App` (`src/app/app.ts`) monta:
+  - `Navbar` (`src/app/layout/navbar/navbar.ts`)
+  - `RouterOutlet` para renderizar páginas según ruta
+
+### 5.3 Ruteo
+
+Definido en `src/app/app.routes.ts`:
+
+- `/` → `HomeComponent`
+- `/Login` → `LoginComponent`
+- `/oauth-callback` → `OuathCallback`
+- `/Registro` → `RegistroComponent`
+- `/pago-exitoso` → `PagoExitosoComponent`
+- `/Resultados/:termino` → `ResultadosComponent`
+- `/JuegoDetalle/:id` → `JuegoDetalle`
+- `/juego/:id` → `JuegoDetalle` (alias)
+- `/Admin` → `Dashboard`
+- `**` → redirección a `/`
+
+> Nota: las rutas están definidas con mayúsculas en varios casos (`/Login`, `/Registro`, `/Admin`, etc.).
+
+## 6) Autenticación y seguridad de requests
+
+### 6.1 Servicio de autenticación
+
+Archivo: `src/app/services/auth.service.ts`
+
+Endpoints usados:
+
+- `POST http://localhost:3000/api/login/loginUser` (login)
+- `POST http://localhost:3000/api/login/` (registro)
+
+### 6.2 Token JWT
+
+- Se guarda en `localStorage` bajo la clave `token`.
+- Se usa para estado de sesión en navbar y para permisos de acciones protegidas.
+
+### 6.3 Interceptor HTTP
+
+En `src/app/app.config.ts` se registra un interceptor que:
+
+- toma el `token` desde `localStorage`
+- agrega el encabezado `Authorization` con el token tipo ****** las peticiones HTTP
+
+## 7) Módulos funcionales (páginas)
+
+### 7.1 Home (`src/app/pages/home`)
+
+Responsabilidades:
+
+- cargar catálogo general y destacados
+- buscador con sugerencias (debounce 200ms)
+- navegación a detalle de juego
+- sección premium con flujo de compra
+
+Servicios usados:
+
+- `JuegosService`
+- `PagoService`
+
+### 7.2 Login (`src/app/pages/login`)
+
+Incluye:
+
+- formulario reactivo (usuario y contraseña)
+- login tradicional contra backend
+- login con Google redirigiendo a `http://localhost:3000/api/auth/google`
+- feedback visual con SweetAlert2
+
+### 7.3 Registro (`src/app/pages/registro`)
+
+Incluye:
+
+- formulario reactivo con validaciones
+- selección de avatar
+- alta de usuario vía backend
+
+### 7.4 OAuth Callback (`src/app/pages/ouath-callback`)
+
+Función:
+
+- leer `token` de query params
+- guardar token en `localStorage`
+- redirigir a home o login según resultado
+
+### 7.5 Resultados (`src/app/pages/resultados`)
+
+Función:
+
+- tomar `:termino` desde URL
+- buscar sugerencias/juegos y mostrarlos
+- ordenar por fecha de lanzamiento (más nuevo primero)
+
+### 7.6 Juego Detalle (`src/app/pages/juego-detalle`)
+
+Función:
+
+- cargar detalle por `id`
+- mostrar estado de carga/error
+- renderizar trailer de YouTube de forma segura (`DomSanitizer`)
+
+### 7.7 Pago Exitoso (`src/app/pages/pago-exitoso`)
+
+Función:
+
+- leer `payment_id` y `status` desde query params
+- si está aprobado, confirmar compra en backend
+- remover `juego_pendiente` de `sessionStorage` al confirmar
+
+### 7.8 Dashboard Admin (`src/app/pages/dashboard`)
+
+Incluye:
+
+- métricas generales
+- gráficos (línea, torta, barras)
+- tabla de auditoría con búsqueda y paginación
+- exportación de auditoría en Excel y PDF
+
+Servicio usado:
+
+- `DashboardService`
+
+## 8) Servicios y contratos HTTP
+
+### 8.1 JuegosService (`src/app/services/juegos.service.ts`)
+
+- `GET /juego/` → catálogo general
+- `GET /juego/mas-jugados` → juegos destacados/mas jugados
+- `GET /juego/sugerencias/:nombre` → sugerencias de búsqueda
+- `GET /juego/detalle/:id` → detalle de juego
+
+### 8.2 PagoService (`src/app/services/pago.ts`)
+
+- `POST /api/pagos/crear-preferencia` → crea preferencia de pago
+- `POST /api/pagos/confirmar-compra` → persiste compra aprobada
+
+### 8.3 DashboardService (`src/app/services/dashboard.service.ts`)
+
+Base: `/api/dashboard` (requiere token)
+
+- `/metricas`
+- `/logins-por-dia`
+- `/acciones-por-tipo`
+- `/usuarios-activos`
+- `/auditoria?pagina=&limite=&busqueda=`
+- `/juegos-buscados`
+
+## 9) Estructura de carpetas (resumen)
+
+```text
+src/
+  app/
+    app.config.ts
+    app.routes.ts
+    layout/
+      navbar/
+    pages/
+      home/
+      login/
+      registro/
+      resultados/
+      juego-detalle/
+      ouath-callback/
+      pago-exitoso/
+      dashboard/
+    services/
+      auth.service.ts
+      juegos.service.ts
+      pago.ts
+      dashboard.service.ts
+```
+
