@@ -1,6 +1,4 @@
-# Proyfrontendgrupo10 (Angular)
-
-Documentación técnica detallada en español del frontend Angular del proyecto.
+# Proyfrontendgrupo10
 
 ## 1) Descripción general
 
